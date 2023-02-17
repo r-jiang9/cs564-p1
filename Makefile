@@ -1,5 +1,5 @@
 build:
-	python3 practiceparser.py
+	python practiceparser.py
 
 clean:
 	rm items.dat
