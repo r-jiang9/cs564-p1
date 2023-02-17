@@ -6,40 +6,71 @@ with open('items-0.json', 'r') as f:
     items = loads(f.read())['Items']
 
 itemOutput = open("items.dat", "a")
+bidOutput = open("bids.dat", "a")
+
 for item in items:
     itemInfo = ""
-    itemID = item["ItemID"]
-    itemInfo += itemID + "|"
+    if item["ItemID"] == None:
+        itemInfo += "NULL|"
+    else:
+        itemID = item["ItemID"]
+        itemInfo += itemID + "|"
+    
+    if item["Name"] == None:
+        itemInfo += "NULL|"
+    else:
+        itemName = item["Name"]
+        itemInfo += itemName + "|"
 
-    itemName = item["Name"]
-    itemInfo += itemName + "|"
-
-    itemCurrently = item["Currently"]
-    itemInfo += itemCurrently + "|"
+    if item["Currently"] == None:
+        itemInfo += "NULL|"
+    else:
+        itemCurrently = item["Currently"]
+        itemInfo += itemCurrently + "|"
 
     if "Buy_Price" in item.keys():
-        itemBuyPrice = item["Buy_Price"]
-        itemInfo += itemBuyPrice + "|"
+        if item["Buy_Price"] == None:
+            itemInfo += "NULL"
+        else:
+            itemBuyPrice = item["Buy_Price"]
+            itemInfo += itemBuyPrice + "|"
     else:
         itemInfo += "NULL|"
 
-    itemFirstBid = item["First_Bid"]
-    itemInfo += itemFirstBid + "|"
+    if item["First_Bid"] == None:
+        itemInfo += "NULL"
+    else:
+        itemFirstBid = item["First_Bid"]
+        itemInfo += itemFirstBid + "|"
 
-    itemNumBids = item["Number_of_Bids"]
-    itemInfo += itemNumBids + "|"
+    if item["Number_of_Bids"] == None:
+        itemInfo += "NULL"
+    else:
+        itemNumBids = item["Number_of_Bids"]
+        itemInfo += itemNumBids + "|"
 
-    itemStart = item["Started"]
-    itemInfo += itemStart + "|"
+    if item["Started"] == None:
+        itemInfo += "NULL"
+    else:
+        itemStart = item["Started"]
+        itemInfo += itemStart + "|"
 
-    itemEnd = item["Ends"]
-    itemInfo += itemEnd + "|"
+    if item["Ends"] == None:
+        itemInfo += "NULL"
+    else:
+        itemEnd = item["Ends"]
+        itemInfo += itemEnd + "|"
 
     if item["Description"] == None:
         itemInfo += "NULL|"
     else:
         itemDescription = item["Description"]
         itemInfo += itemDescription + "|"
+    
+    if "Bids" in item.keys():
+        if item["Bids"] != None:
+            # bids exist, write stuff to bid file
+            bidOutput.write("filler\n")
     
     seller = item["Seller"]
     sellerID = seller["UserID"]
