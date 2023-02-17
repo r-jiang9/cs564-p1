@@ -7,6 +7,7 @@ with open('items-0.json', 'r') as f:
 
 itemOutput = open("items.dat", "a")
 bidOutput = open("bids.dat", "a")
+userOutput = open("users.dat", "a")
 
 for item in items:
     itemInfo = ""
@@ -74,25 +75,52 @@ for item in items:
             bids = item["Bids"]
             for i in range(len(bids)):
                 bidInfo = ""
+                bidderInfo = ""
                 bidInfo += itemID + "|"
                 bid = bids[i]["Bid"]
-                if bid["Bidder"] == None:
-                    bidInfo += "NULL|"
-                else:
+                if bid["Bidder"] != None:
                     bidder = bid["Bidder"]
                     bidInfo += bidder["UserID"] + "|"
+                    bidderInfo += bidder["UserID"] + "|"
+                    if bidder["Rating"] == None:
+                        bidderInfo += "NULL|"
+                    else: 
+                        bidderInfo += bidder["Rating"] + "|"
+                    if "Location" in bidder.keys():
+                        if bidder["Location"] == None:
+                            bidderInfo += "NULL|"
+                        else: 
+                            bidderInfo += bidder["Location"] + "|"
+                    else: 
+                        bidderInfo += "NULL|"
+                    if "Country" in bidder.keys():
+                        if bidder["Country"] == None:
+                            bidderInfo += "NULL"
+                            userOutput.write(bidderInfo + " bidder\n")
+                        else:
+                            bidderInfo += bidder["Country"]
+                            userOutput.write(bidderInfo + " bidder\n")
+                    else:
+                        bidderInfo += "NULL"
+                        userOutput.write(bidderInfo + " bidder\n")
                 if bid["Time"] == None:
                     bidInfo += "NULL|"
                 else:
                     bidInfo += bid["Time"] + "|"
-                bidOutput.write(bidInfo + "\n")       
-         
+                if bid["Amount"] == None:
+                    bidInfo += "NULL"
+                else:
+                    bidInfo += bid["Amount"]
+                bidOutput.write(bidInfo + "\n")      
+
     seller = item["Seller"]
-    sellerID = seller["UserID"]
+    sellerID = seller["UserID"]    
     sellerRating = seller["Rating"]
     sellerLocation = item["Location"]
     sellerCountry = item["Country"]
 
+    userInfo += sellerID + "|" + sellerRating + "|" + sellerLocation + "|" + sellerCountry
+   
     itemInfo += sellerID
-
     itemOutput.write(itemInfo + "\n")
+    userOutput.write(userInfo + "\n")
