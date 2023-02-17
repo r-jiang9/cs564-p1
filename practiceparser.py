@@ -10,6 +10,8 @@ bidOutput = open("bids.dat", "a")
 
 for item in items:
     itemInfo = ""
+    userInfo = ""
+
     if item["ItemID"] == None:
         itemInfo += "NULL|"
     else:
@@ -69,14 +71,28 @@ for item in items:
     
     if "Bids" in item.keys():
         if item["Bids"] != None:
-            # bids exist, write stuff to bid file
-            bidOutput.write("filler\n")
-    
+            bids = item["Bids"]
+            for i in range(len(bids)):
+                bidInfo = ""
+                bidInfo += itemID + "|"
+                bid = bids[i]["Bid"]
+                if bid["Bidder"] == None:
+                    bidInfo += "NULL|"
+                else:
+                    bidder = bid["Bidder"]
+                    bidInfo += bidder["UserID"] + "|"
+                if bid["Time"] == None:
+                    bidInfo += "NULL|"
+                else:
+                    bidInfo += bid["Time"] + "|"
+                bidOutput.write(bidInfo + "\n")       
+         
     seller = item["Seller"]
     sellerID = seller["UserID"]
-    itemInfo += sellerID
-
+    sellerRating = seller["Rating"]
     sellerLocation = item["Location"]
     sellerCountry = item["Country"]
+
+    itemInfo += sellerID
 
     itemOutput.write(itemInfo + "\n")
