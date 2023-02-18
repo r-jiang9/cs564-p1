@@ -45,12 +45,13 @@ item in the data set. Your job is to extend this functionality to create all
 of the necessary SQL tables for your database.
 """
 def parseJson(json_file):
-    with open('items-0.json', 'r') as f:
+    with open(json_file, 'r') as f:
         items = loads(f.read())['Items']
 
     itemOutput = open("items.dat", "a")
     bidOutput = open("bids.dat", "a")
     userOutput = open("users.dat", "a")
+    categoryOutput = open("categories.dat", "a")
 
     for item in items:
         itemInfo = ""
