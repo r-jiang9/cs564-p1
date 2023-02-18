@@ -1,5 +1,5 @@
 build:
-	python practiceparser.py
+	python practiceparser.py items-0.json
 
 clean:
 	rm items.dat
