@@ -11,7 +11,6 @@ Returns true if a file ends in .json
 def isJson(f):
     return len(f) > 5 and f[-5:] == '.json'
 
-
 """
 Converts month to a number, e.g. 'Dec' to '12'
 """
@@ -72,14 +71,14 @@ def parseJson(json_file):
         if item["Currently"] == None:
             itemInfo += "NULL|"
         else:
-            itemCurrently = item["Currently"]
+            itemCurrently = transformDollar(item["Currently"])
             itemInfo += itemCurrently + "|"
 
         if "Buy_Price" in item.keys():
             if item["Buy_Price"] == None:
                 itemInfo += "NULL"
             else:
-                itemBuyPrice = item["Buy_Price"]
+                itemBuyPrice = transformDollar(item["Buy_Price"])
                 itemInfo += itemBuyPrice + "|"
         else:
             itemInfo += "NULL|"
@@ -87,7 +86,7 @@ def parseJson(json_file):
         if item["First_Bid"] == None:
             itemInfo += "NULL"
         else:
-            itemFirstBid = item["First_Bid"]
+            itemFirstBid = transformDollar(item["First_Bid"])
             itemInfo += itemFirstBid + "|"
 
         if item["Number_of_Bids"] == None:
@@ -99,13 +98,13 @@ def parseJson(json_file):
         if item["Started"] == None:
             itemInfo += "NULL"
         else:
-            itemStart = item["Started"]
+            itemStart = transformDttm(item["Started"])
             itemInfo += itemStart + "|"
 
         if item["Ends"] == None:
             itemInfo += "NULL"
         else:
-            itemEnd = item["Ends"]
+            itemEnd = transformDttm(item["Ends"])
             itemInfo += itemEnd + "|"
 
         if item["Description"] == None:
@@ -140,21 +139,21 @@ def parseJson(json_file):
                         if "Country" in bidder.keys():
                             if bidder["Country"] == None:
                                 bidderInfo += "NULL"
-                                userOutput.write(bidderInfo + " bidder\n")
+                                userOutput.write(bidderInfo + "\n")
                             else:
                                 bidderInfo += bidder["Country"]
-                                userOutput.write(bidderInfo + " bidder\n")
+                                userOutput.write(bidderInfo + "\n")
                         else:
                             bidderInfo += "NULL"
-                            userOutput.write(bidderInfo + " bidder\n")
+                            userOutput.write(bidderInfo + "\n")
                     if bid["Time"] == None:
                         bidInfo += "NULL|"
                     else:
-                        bidInfo += bid["Time"] + "|"
+                        bidInfo += transformDttm(bid["Time"]) + "|"
                     if bid["Amount"] == None:
                         bidInfo += "NULL"
                     else:
-                        bidInfo += bid["Amount"]
+                        bidInfo += transformDollar(bid["Amount"])
                     bidOutput.write(bidInfo + "\n")      
 
         seller = item["Seller"]
