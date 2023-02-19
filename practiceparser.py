@@ -1,6 +1,8 @@
 import sys
 from json import loads
 from re import sub
+import pickle
+from os.path import exists as file_exists
 
 MONTHS = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',\
         'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
@@ -51,7 +53,28 @@ def parseJson(json_file):
     itemOutput = open("items.dat", "a")
     bidOutput = open("bids.dat", "a")
     userOutput = open("users.dat", "a")
-    categoryOutput = open("categories.dat", "a")
+    
+    #create Category and ItemCategory tables
+    catList = [] #category table - list of all possible categories
+    itemCategoryList = {}
+    #find the categories file
+    if file_exists("categories.txt"):  #if yes, read it in
+        with open("categories.txt", 'rb') as c:
+            catList = pickle.load(c)
+            c.close()
+        catTxt = open("categories.txt", 'wb') 
+    
+    else:  #else create new file
+        catTxt = open("categories.txt", 'wb')
+        
+    #find the itemCategories file
+    if file_exists("itemCategories.txt"): #if it exists, read it
+        with open("itemCategories.txt", 'rb') as ic:
+            itemCategoryList = pickle.load(ic)
+            ic.close()
+        itemCategoriesTxt = open("itemCategories.txt", 'wb')
+    else:  #else create new file
+        itemCategoriesTxt = open("itemCategories.txt" ,'wb')
 
     for item in items:
         itemInfo = ""
@@ -67,7 +90,8 @@ def parseJson(json_file):
             itemInfo += "NULL|"
         else:
             itemName = item["Name"]
-            itemInfo += itemName + "|"
+            itemInfo += "\"" + sub(r'\"','\"\"', itemName) + "\"|"
+
 
         if item["Currently"] == None:
             itemInfo += "NULL|"
@@ -112,7 +136,7 @@ def parseJson(json_file):
             itemInfo += "NULL|"
         else:
             itemDescription = item["Description"]
-            itemInfo += itemDescription + "|"
+            itemInfo += "\"" + sub(r'\"','\"\"', itemDescription) + "\"|"
         
         if "Bids" in item.keys():
             if item["Bids"] != None:
@@ -155,7 +179,18 @@ def parseJson(json_file):
                         bidInfo += "NULL"
                     else:
                         bidInfo += transformDollar(bid["Amount"])
-                    bidOutput.write(bidInfo + "\n")      
+                    bidOutput.write(bidInfo + "\n")
+        #create ItemCategory table
+        Categories = item["Category"]
+        ItemId = item["ItemID"]
+        
+        #add all new unique categories to the CatList
+        for ItemCats in Categories: 
+            for cat in ItemCats.split('", "'):
+                category = cat.strip()
+                if not category in catList:
+                    catList.append(category)
+        itemCategoryList[ItemId] = Categories
 
         seller = item["Seller"]
         sellerID = seller["UserID"]    
@@ -168,6 +203,39 @@ def parseJson(json_file):
         itemInfo += sellerID
         itemOutput.write(itemInfo + "\n")
         userOutput.write(userInfo + "\n")
+    
+    #save to file so we can use between runs
+    pickle.dump(catList, catTxt)
+    pickle.dump(itemCategoryList, itemCategoriesTxt)
+
+
+
+def create_categories_tables():
+    #sort catList and create Categories table 
+    C = open("Category.dat", 'a')
+    with open("categories.txt", 'rb') as c:       
+        catList = pickle.load(c)
+        catDict = {}
+        catList.sort();
+        c.close()
+
+
+    for i in range(0, len(catList)):
+        catDict[catList[i]] = i+1
+        C.write(str(i+1) + '|"'+ catList[i] + '"\n')
+
+
+    #create itemCategories table    
+    IC = open("ItemCategory.dat", 'a')
+    with open("itemCategories.txt", 'rb') as ic:
+      itemCategoriesList = pickle.load(ic)
+      ic.close()
+  
+    for item in itemCategoriesList:
+        for cat in itemCategoriesList[item]:
+            line = item +"|" + str(catDict[cat])
+            IC.write(line+'\n')
+
 
 """
 Loops through each json files provided on the command line and passes each file
@@ -182,6 +250,8 @@ def main(argv):
         if isJson(f):
             parseJson(f)
             print "Success parsing " + f
+    #create categories
+    create_categories_tables()
 
 if __name__ == '__main__':
     main(sys.argv)

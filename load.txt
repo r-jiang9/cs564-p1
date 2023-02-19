@@ -1,0 +1,12 @@
+.separator | 
+.import Items.dat Item
+update Item set Item_ID = null where Item_ID = "NULL";
+update Item set Name = null where Name = "NULL";
+update Item set Currently = null where Currently = "NULL";
+update Item set Buy_Price = null where Buy_Price = "NULL";
+update Item set First_Bid = null where First_Bid = "NULL";
+update Item set Number_of_Bids = null where Number_of_Bids = "NULL";
+update Item set Started = null where Started = "NULL";
+update Item set Ends = null where Ends = "NULL";
+update Item set Description = null where Description = "NULL";
+update Item set Seller_ID = null where Seller_ID = "NULL";
