@@ -1,5 +1,8 @@
 .separator | 
 .import Items.dat Item
+.import Users.dat User
+.import Bids.dat Bid
+
 update Item set Item_ID = null where Item_ID = "NULL";
 update Item set Name = null where Name = "NULL";
 update Item set Currently = null where Currently = "NULL";

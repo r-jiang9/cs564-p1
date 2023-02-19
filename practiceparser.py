@@ -53,7 +53,7 @@ def parseJson(json_file):
     itemOutput = open("items.dat", "a")
     bidOutput = open("bids.dat", "a")
     userOutput = open("users.dat", "a")
-    
+
     #create Category and ItemCategory tables
     catList = [] #category table - list of all possible categories
     itemCategoryList = {}
@@ -124,13 +124,13 @@ def parseJson(json_file):
             itemInfo += "NULL"
         else:
             itemStart = transformDttm(item["Started"])
-            itemInfo += itemStart + "|"
+            itemInfo += "\"" + itemStart + "\"|"
 
         if item["Ends"] == None:
             itemInfo += "NULL"
         else:
             itemEnd = transformDttm(item["Ends"])
-            itemInfo += itemEnd + "|"
+            itemInfo += "\"" + itemEnd + "\"|"
 
         if item["Description"] == None:
             itemInfo += "NULL|"
@@ -158,7 +158,7 @@ def parseJson(json_file):
                             if bidder["Location"] == None:
                                 bidderInfo += "NULL|"
                             else: 
-                                bidderInfo += bidder["Location"] + "|"
+                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Location"]) + "\"|"
                         else: 
                             bidderInfo += "NULL|"
                         if "Country" in bidder.keys():
@@ -167,6 +167,7 @@ def parseJson(json_file):
                                 userOutput.write(bidderInfo + "\n")
                             else:
                                 bidderInfo += bidder["Country"]
+                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Country"]) + "\""
                                 userOutput.write(bidderInfo + "\n")
                         else:
                             bidderInfo += "NULL"
@@ -174,9 +175,10 @@ def parseJson(json_file):
                     if bid["Time"] == None:
                         bidInfo += "NULL|"
                     else:
-                        bidInfo += transformDttm(bid["Time"]) + "|"
+                        bidInfo += "\"" + transformDttm(bid["Time"]) + "\"|"
                     if bid["Amount"] == None:
                         bidInfo += "NULL"
+                        bidOutput.write(bidInfo + "\n")
                     else:
                         bidInfo += transformDollar(bid["Amount"])
                     bidOutput.write(bidInfo + "\n")
@@ -204,6 +206,10 @@ def parseJson(json_file):
         itemOutput.write(itemInfo + "\n")
         userOutput.write(userInfo + "\n")
     
+    itemOutput.close()
+    bidOutput.close()
+    userOutput.close()
+
     #save to file so we can use between runs
     pickle.dump(catList, catTxt)
     pickle.dump(itemCategoryList, itemCategoriesTxt)
@@ -219,11 +225,9 @@ def create_categories_tables():
         catList.sort();
         c.close()
 
-
     for i in range(0, len(catList)):
         catDict[catList[i]] = i+1
         C.write(str(i+1) + '|"'+ catList[i] + '"\n')
-
 
     #create itemCategories table    
     IC = open("ItemCategory.dat", 'a')
@@ -235,7 +239,6 @@ def create_categories_tables():
         for cat in itemCategoriesList[item]:
             line = item +"|" + str(catDict[cat])
             IC.write(line+'\n')
-
 
 """
 Loops through each json files provided on the command line and passes each file
