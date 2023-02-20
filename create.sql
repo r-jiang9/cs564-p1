@@ -25,8 +25,8 @@ CREATE TABLE User (
 CREATE TABLE Bid (
   Item_ID INTEGER,
   Bidder_ID INTEGER, 
-  Amount NUMERIC,
   Time CHAR(20),
+  Amount REAL,
   FOREIGN KEY (Item_ID) references Item(Item_ID),
   PRIMARY KEY(Item_ID, Bidder_ID, Time)
 );
