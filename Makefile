@@ -1,10 +1,10 @@
 build:
-	python practiceparser.py items-*.json
+	python practiceparser.py items-39.json
 
 clean:
-	rm items.dat
-	rm bids.dat
-	rm users.dat
+	rm Item.dat
+	rm Bid.dat
+	rm User.dat
 	rm Category.dat
 	rm ItemCategory.dat
 	rm itemCategories.txt

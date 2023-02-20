@@ -1,7 +1,9 @@
 .separator | 
-.import Items.dat Item
-.import Users.dat User
-.import Bids.dat Bid
+.import Item.dat Item
+.import User.dat User
+.import Bid.dat Bid
+.import Category.dat Category
+.import ItemCategory.dat ItemCategory
 
 update Item set Item_ID = null where Item_ID = "NULL";
 update Item set Name = null where Name = "NULL";
@@ -13,3 +15,13 @@ update Item set Started = null where Started = "NULL";
 update Item set Ends = null where Ends = "NULL";
 update Item set Description = null where Description = "NULL";
 update Item set Seller_ID = null where Seller_ID = "NULL";
+
+update User set User_ID = null where User_ID = "NULL";
+update User set Location = null where Location = "NULL";
+update User set Rating = null where Rating = "NULL";
+update User set Country = null where Country = "NULL";
+
+update Bid set Item_ID = null where Item_ID = "NULL";
+update Bid set Bidder_ID = null where Bidder_ID = "NULL";
+update Bid set Amount = null where Amount = "NULL";
+update Bid set Time = null where Time = "NULL";

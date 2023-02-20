@@ -50,9 +50,9 @@ def parseJson(json_file):
     with open(json_file, 'r') as f:
         items = loads(f.read())['Items']
 
-    itemOutput = open("items.dat", "a")
-    bidOutput = open("bids.dat", "a")
-    userOutput = open("users.dat", "a")
+    itemOutput = open("Item.dat", "a")
+    bidOutput = open("Bid.dat", "a")
+    userOutput = open("User.dat", "a")
 
     #create Category and ItemCategory tables
     catList = [] #category table - list of all possible categories
@@ -89,7 +89,7 @@ def parseJson(json_file):
         if item["Name"] == None:
             itemInfo += "NULL|"
         else:
-            itemName = item["Name"]
+            itemName = item["Name"].strip()
             itemInfo += "\"" + sub(r'\"','\"\"', itemName) + "\"|"
 
 
@@ -135,7 +135,7 @@ def parseJson(json_file):
         if item["Description"] == None:
             itemInfo += "NULL|"
         else:
-            itemDescription = item["Description"]
+            itemDescription = item["Description"].strip()
             itemInfo += "\"" + sub(r'\"','\"\"', itemDescription) + "\"|"
         
         if "Bids" in item.keys():
@@ -148,8 +148,8 @@ def parseJson(json_file):
                     bid = bids[i]["Bid"]
                     if bid["Bidder"] != None:
                         bidder = bid["Bidder"]
-                        bidInfo += bidder["UserID"] + "|"
-                        bidderInfo += bidder["UserID"] + "|"
+                        bidInfo +=  "\"" + sub(r'\"','\"\"', bidder["UserID"].strip()) + "\"|"
+                        bidderInfo += "\"" + sub(r'\"','\"\"', bidder["UserID"].strip()) + "\"|"
                         if bidder["Rating"] == None:
                             bidderInfo += "NULL|"
                         else: 
@@ -158,7 +158,7 @@ def parseJson(json_file):
                             if bidder["Location"] == None:
                                 bidderInfo += "NULL|"
                             else: 
-                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Location"]) + "\"|"
+                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Location"].strip()) + "\"|"
                         else: 
                             bidderInfo += "NULL|"
                         if "Country" in bidder.keys():
@@ -166,8 +166,7 @@ def parseJson(json_file):
                                 bidderInfo += "NULL"
                                 userOutput.write(bidderInfo + "\n")
                             else:
-                                bidderInfo += bidder["Country"]
-                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Country"]) + "\""
+                                bidderInfo += "\"" + sub(r'\"','\"\"', bidder["Country"].strip()) + "\""
                                 userOutput.write(bidderInfo + "\n")
                         else:
                             bidderInfo += "NULL"
@@ -195,14 +194,14 @@ def parseJson(json_file):
         itemCategoryList[ItemId] = Categories
 
         seller = item["Seller"]
-        sellerID = seller["UserID"]    
-        sellerRating = seller["Rating"]
-        sellerLocation = item["Location"]
-        sellerCountry = item["Country"]
+        sellerID = "\"" + sub(r'\"','\"\"', seller["UserID"].strip()) + "\"|"
+        sellerRating = seller["Rating"].strip() + "|"
+        sellerLocation = "\"" + sub(r'\"','\"\"', item["Location"].strip()) + "\"|"
+        sellerCountry = "\"" + sub(r'\"','\"\"', item["Country"].strip()) + "\""
 
-        userInfo += sellerID + "|" + sellerRating + "|" + sellerLocation + "|" + sellerCountry
+        userInfo += sellerID + sellerRating + sellerLocation + sellerCountry
     
-        itemInfo += sellerID
+        itemInfo +="\"" + sub(r'\"','\"\"', seller["UserID"].strip()) + "\""
         itemOutput.write(itemInfo + "\n")
         userOutput.write(userInfo + "\n")
     
@@ -222,7 +221,7 @@ def create_categories_tables():
     with open("categories.txt", 'rb') as c:       
         catList = pickle.load(c)
         catDict = {}
-        catList.sort();
+        catList.sort()
         c.close()
 
     for i in range(0, len(catList)):
@@ -254,7 +253,7 @@ def main(argv):
             parseJson(f)
             print "Success parsing " + f
     #create categories
-    create_categories_tables()
+    #create_categories_tables()
 
 if __name__ == '__main__':
     main(sys.argv)

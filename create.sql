@@ -13,10 +13,11 @@ CREATE TABLE Item (
   Started CHAR(20),
   Ends CHAR(20),
   Description CHAR(20),
-  Seller_ID INTEGER
+  Seller_ID INTEGER,
+  FOREIGN KEY (Seller_ID) references User (User_ID)
 );
 CREATE TABLE User (
-  User_ID INTEGER PRIMARY KEY,
+  User_ID CHAR(20) PRIMARY KEY,
   Rating INTEGER,
   Location CHAR(20),
   Country CHAR(20)
@@ -24,14 +25,15 @@ CREATE TABLE User (
 CREATE TABLE Bid (
   Item_ID INTEGER,
   Bidder_ID INTEGER, 
-  Amount REAL,
+  Amount NUMERIC,
   Time CHAR(20),
-  PRIMARY KEY(Item_ID, Bidder_ID)
+  FOREIGN KEY (Item_ID) references Item(Item_ID),
+  PRIMARY KEY(Item_ID, Bidder_ID, Time)
 );
 CREATE TABLE ItemCategory (
   Item_ID INTEGER,
-  Category_ID INTEGER 
-  Foreign Key (Category_ID) references Category
+  Category_ID INTEGER, 
+  FOREIGN KEY (Category_ID) references Category (Category_ID),
   PRIMARY KEY(Item_ID, Category_ID)
 );
 CREATE TABLE Category (
