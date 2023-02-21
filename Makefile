@@ -9,3 +9,4 @@ clean:
 	rm ItemCategory.dat
 	rm itemCategories.txt
 	rm categories.txt
+	rm database.db
