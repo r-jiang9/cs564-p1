@@ -1,6 +1,5 @@
-Select count(*) from
-    (Select count(ic.item_ID) Categories
-    From ItemCategory ic
-    Group by  ic.item_id
-    ) NumCategories
-Where NumCategories.Categories = 4;
+SELECT Count(*) FROM
+    (SELECT Count(ic.item_ID) Categories
+    FROM ItemCategory ic
+    GROUP BY ic.item_id) NumCategories
+WHERE NumCategories.Categories = 4;
